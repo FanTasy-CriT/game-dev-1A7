@@ -8,7 +8,7 @@ void display_bmp(SDL_Surface* screen,SDL_Rect pos)
 {
 SDL_Surface *image;
 //Load the BMP file into a surface 
-image = SDL_LoadBMP("/home/fantasy/final.bmp");
+image = SDL_LoadBMP("final.bmp");
 if (image == NULL) {
 fprintf(stderr, "Couldnt load : %s\n", SDL_GetError());
 return;
