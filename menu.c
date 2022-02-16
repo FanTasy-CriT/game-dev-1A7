@@ -39,3 +39,10 @@ fprintf(stderr, "BlitSurface error: %s\n", SDL_GetError());
 SDL_Flip(screen);
 }
 }
+void initialize_audio(Mix_Music * music){
+    if(Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024)==-1){
+    printf("%s",SDL_GetError());
+}
+music=Mix_LoadMUS("CODEX Installer Music .mp3");
+Mix_PlayMusic(music,-1);
+}

@@ -30,6 +30,13 @@ fprintf(stderr, "Couldn’t set 640x480x8 video mode: %s\n",
 SDL_GetError());
 exit(1);
 }
+
+//playing music
+Mix_Music * music;
+initialize_audio(music);
+
+
+
 display_bmp(screen,pos);
 display_img(screen,posmenu,"play.png");
 display_img(screen,posmenu1,"options.png");
@@ -37,36 +44,40 @@ display_img(screen,posmenu2,"credits.png");
 display_img(screen,posmenu3,"quit.png");
 SDL_Event test_event;
 
+
+printf("menu inintialized!\n");
+printf("listening on events ...\n");
+
+
 while(1){
 while(SDL_PollEvent(&test_event)) {
 switch(test_event.type) {
     case SDL_MOUSEMOTION:
-        if(test_event.motion.x<=423 && test_event.motion.x>=213){
-            if(test_event.motion.y<=120 && test_event.motion.y>=80){
+            if(test_event.motion.y<=120 && test_event.motion.y>=80 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 display_img(screen,posmenu,"playhover.png");
                 display_img(screen,posmenu1,"options.png");
                 display_img(screen,posmenu2,"credits.png");
                 display_img(screen,posmenu3,"quit.png");
             }
-            else if(test_event.motion.y<=181 && test_event.motion.y>=136){
+            else if(test_event.motion.y<=181 && test_event.motion.y>=136 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 display_img(screen,posmenu,"play.png");
                 display_img(screen,posmenu1,"optionshover.png");
                 display_img(screen,posmenu2,"credits.png");
                 display_img(screen,posmenu3,"quit.png");
             }
-            else if(test_event.motion.y<=240 && test_event.motion.y>=195){
+            else if(test_event.motion.y<=240 && test_event.motion.y>=195 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 display_img(screen,posmenu,"play.png");
                 display_img(screen,posmenu1,"options.png");
                 display_img(screen,posmenu2,"creditshover.png");
                 display_img(screen,posmenu3,"quit.png");
             }
-            else if(test_event.motion.y<=240 && test_event.motion.y>=195){
+            else if(test_event.motion.y<=240 && test_event.motion.y>=195 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 display_img(screen,posmenu,"play.png");
                 display_img(screen,posmenu1,"options.png");
                 display_img(screen,posmenu2,"creditshover.png");
                 display_img(screen,posmenu3,"quit.png");
             }
-            else if(test_event.motion.y<=300 && test_event.motion.y>=255){
+            else if(test_event.motion.y<=300 && test_event.motion.y>=255 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 display_img(screen,posmenu,"play.png");
                 display_img(screen,posmenu1,"options.png");
                 display_img(screen,posmenu2,"credits.png");
@@ -78,18 +89,16 @@ switch(test_event.type) {
                 display_img(screen,posmenu2,"credits.png");
                 display_img(screen,posmenu3,"quit.png");
             }
-        }
         break;
     case SDL_KEYDOWN:
+    Mix_FreeMusic(music);
+    printf("stopping music");
+    SDL_Delay(60);
     SDL_Quit();
+    //shutdown all sub systems
     printf("Quiting....\n");
     exit(0);
 }
 }
 }
-printf("Quiting SDL.\n");
-/* Shutdown all subsystems */
-SDL_Quit();
-printf("Quiting....\n");
-exit(0);
 }
