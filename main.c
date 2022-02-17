@@ -35,7 +35,7 @@ exit(1);
 Mix_Music * music;
 initialize_audio(music);
 
-
+int pos1=0; //hover position
 
 display_bmp(screen,pos);
 display_img(screen,posmenu,"play.png");
@@ -54,50 +54,46 @@ while(SDL_PollEvent(&test_event)) {
 switch(test_event.type) {
     case SDL_MOUSEMOTION:
             if(test_event.motion.y<=120 && test_event.motion.y>=80 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
-                display_img(screen,posmenu,"playhover.png");
-                display_img(screen,posmenu1,"options.png");
-                display_img(screen,posmenu2,"credits.png");
-                display_img(screen,posmenu3,"quit.png");
+                hover(1,posmenu,posmenu1,posmenu2,posmenu3,screen);
             }
             else if(test_event.motion.y<=181 && test_event.motion.y>=136 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
-                display_img(screen,posmenu,"play.png");
-                display_img(screen,posmenu1,"optionshover.png");
-                display_img(screen,posmenu2,"credits.png");
-                display_img(screen,posmenu3,"quit.png");
+                hover(2,posmenu,posmenu1,posmenu2,posmenu3,screen);
             }
             else if(test_event.motion.y<=240 && test_event.motion.y>=195 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
-                display_img(screen,posmenu,"play.png");
-                display_img(screen,posmenu1,"options.png");
-                display_img(screen,posmenu2,"creditshover.png");
-                display_img(screen,posmenu3,"quit.png");
-            }
-            else if(test_event.motion.y<=240 && test_event.motion.y>=195 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
-                display_img(screen,posmenu,"play.png");
-                display_img(screen,posmenu1,"options.png");
-                display_img(screen,posmenu2,"creditshover.png");
-                display_img(screen,posmenu3,"quit.png");
+                hover(3,posmenu,posmenu1,posmenu2,posmenu3,screen);
             }
             else if(test_event.motion.y<=300 && test_event.motion.y>=255 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
-                display_img(screen,posmenu,"play.png");
-                display_img(screen,posmenu1,"options.png");
-                display_img(screen,posmenu2,"credits.png");
-                display_img(screen,posmenu3,"quithover.png");
+                hover(4,posmenu,posmenu1,posmenu2,posmenu3,screen);
             }
             else {
-                display_img(screen,posmenu,"play.png");
-                display_img(screen,posmenu1,"options.png");
-                display_img(screen,posmenu2,"credits.png");
-                display_img(screen,posmenu3,"quit.png");
+                hover(0,posmenu,posmenu1,posmenu2,posmenu3,screen);
             }
         break;
+        /*
+    case SDL_MOUSEBUTTONUP:
+            if(test_event.button==0)printf("clicked");
+        break;
+        */
     case SDL_KEYDOWN:
-    Mix_FreeMusic(music);
-    printf("stopping music");
-    SDL_Delay(60);
-    SDL_Quit();
-    //shutdown all sub systems
-    printf("Quiting....\n");
-    exit(0);
+        PrintKeyInfo(&test_event.key);
+            switch(test_event.key.keysym.sym){
+            case SDLK_DOWN:
+                if(pos1<4)pos1++;
+                hover(pos1,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                break;
+            case SDLK_UP:
+                if(pos1>1)pos1--;
+                hover(pos1,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                break;
+            }
+    break;
+    /* SDL_QUIT event (window close) */
+    case SDL_QUIT:
+        SDL_Quit();
+        //shutdown all sub systems
+        printf("Quiting....\n");
+        exit(0);
+        break;
 }
 }
 }

@@ -46,3 +46,47 @@ void initialize_audio(Mix_Music * music){
 music=Mix_LoadMUS("CODEX Installer Music .mp3");
 Mix_PlayMusic(music,-1);
 }
+ void PrintKeyInfo( SDL_KeyboardEvent *key ){
+        /* Is it a release or a press? */
+        if( key->type == SDL_KEYUP )
+            printf( "Release: " );
+        else
+            printf( "Press: " );
+        /* Print the name of the key */
+        printf( "%s", SDL_GetKeyName( key->keysym.sym ) );
+        printf( "\n" );
+    }
+void hover(int possition,SDL_Rect posmenu,SDL_Rect posmenu1,SDL_Rect posmenu2,SDL_Rect posmenu3,SDL_Surface* screen){
+    switch(possition){
+    case 1:
+        display_img(screen,posmenu,"playhover.png");
+        display_img(screen,posmenu1,"options.png");
+        display_img(screen,posmenu2,"credits.png");
+        display_img(screen,posmenu3,"quit.png");
+    break;
+    case 2:
+        display_img(screen,posmenu,"play.png");
+        display_img(screen,posmenu1,"optionshover.png");
+        display_img(screen,posmenu2,"credits.png");
+        display_img(screen,posmenu3,"quit.png");
+    break;
+    case 3:
+        display_img(screen,posmenu,"play.png");
+        display_img(screen,posmenu1,"options.png");
+        display_img(screen,posmenu2,"creditshover.png");
+        display_img(screen,posmenu3,"quit.png");
+    break;
+    case 4:
+        display_img(screen,posmenu,"play.png");
+        display_img(screen,posmenu1,"options.png");
+        display_img(screen,posmenu2,"credits.png");
+        display_img(screen,posmenu3,"quithover.png");
+    break;
+    case 0:
+    display_img(screen,posmenu,"play.png");
+    display_img(screen,posmenu1,"options.png");
+    display_img(screen,posmenu2,"credits.png");
+    display_img(screen,posmenu3,"quit.png");
+    break;
+}
+}
