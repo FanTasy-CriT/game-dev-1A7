@@ -64,7 +64,7 @@ void hover(int possition,SDL_Rect posmenu,SDL_Rect posmenu1,SDL_Rect posmenu2,SD
 Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 son = Mix_LoadWAV("simple.wav");
 if(son==NULL) printf("%s",SDL_GetError());
-Mix_VolumeChunk(son,MIX_MAX_VOLUME/3);
+Mix_VolumeChunk(son,MIX_MAX_VOLUME/2.5);
     switch(possition){
     case 1:
         display_img(screen,posmenu,"playhover.png");
