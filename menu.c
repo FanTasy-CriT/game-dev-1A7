@@ -116,10 +116,12 @@ TTF_Quit();
 
 int menu_loop(SDL_Event test_event,SDL_Rect posmenu1,SDL_Rect posmenu2,SDL_Rect posmenu3,SDL_Rect posmenu,SDL_Surface* screen){
 int position =0;
+SDL_Rect pos;
+display_bmp(screen,pos);
+hover(0,posmenu,posmenu1,posmenu2,posmenu3,screen);
 while(1){
 while(SDL_PollEvent(&test_event)) {
 //handeling hovering on buttons using mouse
-printf("%d %d \n",test_event.motion.x,test_event.motion.y);
 switch(test_event.type) {
     case SDL_MOUSEMOTION:
             if(test_event.motion.y<=120 && test_event.motion.y>=80 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
@@ -151,6 +153,7 @@ switch(test_event.type) {
     case SDL_MOUSEBUTTONDOWN:
     if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=120 && test_event.motion.y>=80 && test_event.motion.x<=423 && test_event.motion.x>=213)){
         puts("click play");
+        return 1;
     }
     else if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=181 && test_event.motion.y>=136 && test_event.motion.x<=423 && test_event.motion.x>=213)){
         puts("clicked options");
@@ -160,6 +163,7 @@ switch(test_event.type) {
     }
     else if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=240 && test_event.motion.y>=195 && test_event.motion.x<=423 && test_event.motion.x>=213)){
         puts("click credits");
+        return 3;
     }
     else if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=300 && test_event.motion.y>=255 && test_event.motion.x<=423 && test_event.motion.x>=213)){
         puts("click quits");

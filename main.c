@@ -40,7 +40,6 @@ initialize_audio(music);
 
 
 int position =0; //hover position mouse
-display_bmp(screen,pos);
 SDL_Surface* text;
 SDL_Colour colorblack={177,185,236};
 TTF_Font* font;
@@ -56,8 +55,11 @@ SDL_Event test_event;
 
 printf("menu inintialized!\n");
 printf("listening on events ...\n");
+int i=0;
+int level=2;
 int done=0;
 while(1){
+    done=0;
 switch(menu_loop(test_event,posmenu1,posmenu2,posmenu3,posmenu,screen)){
     case 1:
     //load play
@@ -66,14 +68,31 @@ switch(menu_loop(test_event,posmenu1,posmenu2,posmenu3,posmenu,screen)){
     while(!(done==1)){
     display_img(screen,posoptions,"optionsmenu.png");
     while(SDL_PollEvent(&test_event)) {
-        printf("%d %d \n",test_event.motion.x,test_event.motion.y);
         switch(test_event.type) {
             case SDL_MOUSEBUTTONDOWN:
-                if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=160 && test_event.motion.y>=148 && test_event.motion.x<=368 && test_event.motion.x>=352)){
-                    puts("clicked on volume");
+                if(test_event.button.button==SDL_BUTTON_RIGHT && (test_event.motion.y<=160 && test_event.motion.y>=148 && test_event.motion.x<=368 && test_event.motion.x>=352)){
+                    if(level<=4){
+                    level++;
+                    Mix_VolumeMusic(MIX_MAX_VOLUME/level);
+                    if(level==5)Mix_VolumeMusic(0);
+                    }
                 }
+                if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=160 && test_event.motion.y>=148 && test_event.motion.x<=368 && test_event.motion.x>=352)){
+                    if(level>=2){
+                    level--;
+                    Mix_VolumeMusic(MIX_MAX_VOLUME/level);
+                    }
+                }
+                //clicked on full screen
                 if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=197 && test_event.motion.y>=185 && test_event.motion.x<=368 && test_event.motion.x>=352)){
-                    SDL_WM_ToggleFullScreen(screen);
+                    if(i==0){SDL_WM_ToggleFullScreen(screen);i++;}
+                }
+                //clicked on windowed
+                if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=235 && test_event.motion.y>=220 && test_event.motion.x<=368 && test_event.motion.x>=352)){
+                    if(i==1){SDL_WM_ToggleFullScreen(screen);i--;}
+                }
+                if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=110 && test_event.motion.y>=81 && test_event.motion.x<=212 && test_event.motion.x>=184)){
+                    done=1;
                 }
             break;
             case SDL_QUIT:
