@@ -34,21 +34,14 @@ fprintf(stderr, "Couldn’t set 640x480x8 video mode: %s\n",SDL_GetError());
 return 1;
 }
 
+
 //playing music
+
 Mix_Music * music;
 initialize_audio(music);
 
 
 int position =0; //hover position mouse
-SDL_Surface* text;
-SDL_Colour colorblack={177,185,236};
-TTF_Font* font;
-SDL_Rect textpos;
-textpos.x=195;
-textpos.y=390;
-textpos.w=0;
-textpos.h=0;
-write_texte(font,colorblack,text,textpos, screen);
 hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
 SDL_Event test_event;
 
@@ -57,9 +50,8 @@ printf("menu inintialized!\n");
 printf("listening on events ...\n");
 int i=0;
 int level=2;
-int done=0;
 while(1){
-    done=0;
+    int done=0;
 switch(menu_loop(test_event,posmenu1,posmenu2,posmenu3,posmenu,screen)){
     case 1:
     //load play
