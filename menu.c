@@ -59,37 +59,25 @@ Mix_VolumeMusic(MIX_MAX_VOLUME/3.5);
         printf( "%s", SDL_GetKeyName( key->keysym.sym ) );
         printf( "\n" );
     }
-void hover(int possition,SDL_Rect posmenu,SDL_Rect posmenu1,SDL_Rect posmenu2,SDL_Rect posmenu3,SDL_Surface* screen){
+void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen){
+    posmenu.x=posmenu.x+30;
+    posmenu.y=posmenu.y-2;
     switch(possition){
     case 1:
-        display_img(screen,posmenu,"playhover.png");
-        display_img(screen,posmenu1,"options.png");
-        display_img(screen,posmenu2,"credits.png");
-        display_img(screen,posmenu3,"quit.png");
+        display_img(screen,posmenu,"./images/1.png");
     break;
     case 2:
-        display_img(screen,posmenu,"play.png");
-        display_img(screen,posmenu1,"optionshover.png");
-        display_img(screen,posmenu2,"credits.png");
-        display_img(screen,posmenu3,"quit.png");
+        display_img(screen,posmenu,"./images/2.png");
     break;
     case 3:
-        display_img(screen,posmenu,"play.png");
-        display_img(screen,posmenu1,"options.png");
-        display_img(screen,posmenu2,"creditshover.png");
-        display_img(screen,posmenu3,"quit.png");
+        display_img(screen,posmenu,"./images/3.png");
     break;
     case 4:
-        display_img(screen,posmenu,"play.png");
-        display_img(screen,posmenu1,"options.png");
-        display_img(screen,posmenu2,"credits.png");
-        display_img(screen,posmenu3,"quithover.png");
+        display_img(screen,posmenu,"./images/4.png");
+
     break;
     case 0:
-    display_img(screen,posmenu,"play.png");
-    display_img(screen,posmenu1,"options.png");
-    display_img(screen,posmenu2,"credits.png");
-    display_img(screen,posmenu3,"quit.png");
+    display_img(screen,posmenu,"./images/0.png");
     break;
 }
 //Game-Button-Sounds-Pack-Free-Sounds-_AudioTrimmer.com_.wav
@@ -105,11 +93,11 @@ TTF_Quit();
 }
 
 
-int menu_loop(SDL_Event test_event,SDL_Rect posmenu1,SDL_Rect posmenu2,SDL_Rect posmenu3,SDL_Rect posmenu,SDL_Surface* screen){
+int menu_loop(SDL_Event test_event,SDL_Rect posmenu,SDL_Surface* screen){
 Mix_Chunk * son;
 int position =0;
 SDL_Rect pos;
-SDL_Colour colorblack={0,0,0};
+SDL_Colour colorblack={153,153,0};
 TTF_Font* font;
 SDL_Surface* text;
 SDL_Rect textpos;
@@ -117,58 +105,46 @@ textpos.x=200;
 textpos.y=390;
 textpos.w=0;
 textpos.h=0;
-write_texte(font,colorblack,text,textpos, screen);
-hover(0,posmenu,posmenu1,posmenu2,posmenu3,screen);
-char filename[50];
-int current=1;
-int j=1;
+hover(0,posmenu,screen);
+int i=1;
 while(1){
-    if(j>500 && current==0){
-    display_bmp(screen,pos,"1.bmp");
-    hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
-    current=1;
-    }
-    if(j<500 && current==1){
-    display_bmp(screen,pos,"2.bmp");
-    current=0;
-    hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
-    }
-    if(j>1000){
-        j=1;
-    }
-    j++;
-    SDL_Delay(2);
+i++;
+if(i>=11){
+    i=1;
+}
+live_background(screen,pos,i);
+write_texte(font,colorblack,text,textpos, screen);
 while(SDL_PollEvent(&test_event)) {
 //handeling hovering on buttons using mouse
 switch(test_event.type) {
     case SDL_MOUSEMOTION:
             if(test_event.motion.y<=120 && test_event.motion.y>=80 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 if(position!=1){ position=1;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 play_effect(son);}
             }
             else if(test_event.motion.y<=181 && test_event.motion.y>=136 && test_event.motion.x<=423 && test_event.motion.x>=213){
                 if(position!=2){ position=2;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 
                 play_effect(son);
                 }
             }
             else if(test_event.motion.y<=240 && test_event.motion.y>=195 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 if(position!=3){ position=3;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 
                 play_effect(son);}
             }
             else if(test_event.motion.y<=300 && test_event.motion.y>=255 &&(test_event.motion.x<=423 && test_event.motion.x>=213)){
                 if(position!=4){ position=4;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 
                 play_effect(son);}
             }
             else {
                 if(position!=0){ position=0;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 }
             }
         break;
@@ -210,13 +186,13 @@ switch(test_event.type) {
             //handeling switch menu element using up and down buttons
             if(strcmp(SDL_GetKeyName(test_event.key.keysym.sym),"down")==0){
                 if(position<4)position++;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 
                 play_effect(son);
             }
             if(strcmp(SDL_GetKeyName(test_event.key.keysym.sym),"up")==0){
                 if(position>1)position--;
-                hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+                hover(position,posmenu,screen);
                 
                 play_effect(son);
             }
@@ -264,4 +240,14 @@ son = Mix_LoadWAV("simple.wav");
 if(son==NULL) printf("%s",SDL_GetError());
 Mix_VolumeChunk(son,MIX_MAX_VOLUME/2.5);
 Mix_PlayChannel(-1,son,0);
+}
+void live_background(SDL_Surface* screen,SDL_Rect pos,int i){
+    char filename[50];
+
+pos.x=0;
+pos.y=0;
+SDL_Delay(50);
+    sprintf(filename,"./images/%d",i);
+    strcat(filename,".jpg.png");
+    display_img(screen,pos,filename);
 }

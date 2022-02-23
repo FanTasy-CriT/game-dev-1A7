@@ -42,7 +42,7 @@ initialize_audio(music);
 
 
 int position =0; //hover position mouse
-hover(position,posmenu,posmenu1,posmenu2,posmenu3,screen);
+hover(position,posmenu,screen);
 SDL_Event test_event;
 
 
@@ -52,13 +52,13 @@ int i=0;
 int level=2;
 while(1){
     int done=0;
-switch(menu_loop(test_event,posmenu1,posmenu2,posmenu3,posmenu,screen)){
+switch(menu_loop(test_event,posmenu,screen)){
     case 1:
     //load play
     break;
     case 2:
     while(!(done==1)){
-    display_img(screen,posoptions,"optionsmenu.png");
+    display_img(screen,posoptions,"./images/optionsmenu.png");
     while(SDL_PollEvent(&test_event)) {
         switch(test_event.type) {
             case SDL_MOUSEBUTTONDOWN:
