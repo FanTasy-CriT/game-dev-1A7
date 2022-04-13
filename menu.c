@@ -3,6 +3,8 @@
 #include <SDL/SDL.h>/* All SDL App’s need this */
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>
+#include "minimap.h"
+#include "time.h"
 #include <stdio.h>
 
 void display_bmp(SDL_Surface* screen,SDL_Rect pos,const char * path)
@@ -49,15 +51,9 @@ music=Mix_LoadMUS("CODEX Installer Music .mp3");
 Mix_PlayMusic(music,1);
 Mix_VolumeMusic(MIX_MAX_VOLUME/3.5);
 }
- void PrintKeyInfo( SDL_KeyboardEvent *key ){
-        /* Is it a release or a press? */
-        if( key->type == SDL_KEYUP )
-            printf( "Release: " );
-        else
-            printf( "Press: " );
+char* PrintKeyInfo( SDL_KeyboardEvent *key ){
         /* Print the name of the key */
-        printf( "%s", SDL_GetKeyName( key->keysym.sym ) );
-        printf( "\n" );
+        return SDL_GetKeyName( key->keysym.sym );
     }
 void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen){
     posmenu.x=posmenu.x+30;
@@ -82,10 +78,10 @@ void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen){
 }
 //Game-Button-Sounds-Pack-Free-Sounds-_AudioTrimmer.com_.wav
 }
-void write_texte(TTF_Font* font,SDL_Color colorblack,SDL_Surface* text,SDL_Rect textpos,SDL_Surface* screen){
+void write_texte(int fontsize,const char message[], TTF_Font* font,SDL_Color colorblack,SDL_Surface* text,SDL_Rect textpos,SDL_Surface* screen){
 TTF_Init();
-font=TTF_OpenFont("Ubuntu-B.ttf",15);
-text =TTF_RenderText_Blended(font,"© 2021-2022 All Rights Reserved",colorblack);
+font=TTF_OpenFont("Ubuntu-B.ttf",fontsize);
+text =TTF_RenderText_Blended(font,message,colorblack);
 SDL_BlitSurface(text, NULL, screen, &textpos); 
 SDL_Flip(screen);
 TTF_CloseFont(font);
@@ -101,11 +97,13 @@ SDL_Colour colorblack={153,153,0};
 TTF_Font* font;
 SDL_Surface* text;
 SDL_Rect textpos;
-textpos.x=200;
+textpos.x=250;
 textpos.y=390;
 textpos.w=0;
 textpos.h=0;
+
 hover(0,posmenu,screen);
+
 int i=1;
 while(1){
 i++;
@@ -113,7 +111,7 @@ if(i>=11){
     i=1;
 }
 live_background(screen,pos,i);
-write_texte(font,colorblack,text,textpos, screen);
+write_texte(12,"all rights reserved",font,colorblack,text,textpos, screen);
 while(SDL_PollEvent(&test_event)) {
 //handeling hovering on buttons using mouse
 switch(test_event.type) {
@@ -247,6 +245,7 @@ void live_background(SDL_Surface* screen,SDL_Rect pos,int i){
 pos.x=0;
 pos.y=0;
 SDL_Delay(50);
+
     sprintf(filename,"./images/%d",i);
     strcat(filename,".jpg.png");
     display_img(screen,pos,filename);
