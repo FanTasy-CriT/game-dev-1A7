@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 void display_bmp(SDL_Surface* screen,SDL_Rect pos,const char * path);
-void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path);
+void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path,SDL_Surface* image);
 void initialize_audio(Mix_Music * music);
 char* PrintKeyInfo( SDL_KeyboardEvent *key );
 void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen);

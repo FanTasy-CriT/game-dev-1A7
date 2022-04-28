@@ -26,9 +26,8 @@ printf("BlitSurface error: %s\n", SDL_GetError());
 }
 SDL_Flip(screen);
 }
-void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path){
+void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path,SDL_Surface* image){
 {
-SDL_Surface *image;
 //Load the BMP file into a surface 
 image = IMG_Load(path);
 if (image == NULL) {
@@ -40,6 +39,7 @@ if(SDL_BlitSurface(image, NULL, screen, &pos)){
 printf("BlitSurface error: %s\n", SDL_GetError());
 }
 SDL_Flip(screen);
+SDL_Flip(image);
 }
 }
 void initialize_audio(Mix_Music * music){
@@ -47,8 +47,8 @@ void initialize_audio(Mix_Music * music){
     printf("%s",SDL_GetError());
     
 }
-music=Mix_LoadMUS("CODEX Installer Music .mp3");
-Mix_PlayMusic(music,1);
+music=Mix_LoadMUS("Myrath - Wide Shut (mp3cut.net).mp3");
+Mix_PlayMusic(music,-1);
 Mix_VolumeMusic(MIX_MAX_VOLUME/3.5);
 }
 char* PrintKeyInfo( SDL_KeyboardEvent *key ){
@@ -58,22 +58,23 @@ char* PrintKeyInfo( SDL_KeyboardEvent *key ){
 void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen){
     posmenu.x=posmenu.x+30;
     posmenu.y=posmenu.y-2;
+    SDL_Surface* image;
     switch(possition){
     case 1:
-        display_img(screen,posmenu,"./images/1.png");
+        display_img(screen,posmenu,"./images/1.png",image);
     break;
     case 2:
-        display_img(screen,posmenu,"./images/2.png");
+        display_img(screen,posmenu,"./images/2.png",image);
     break;
     case 3:
-        display_img(screen,posmenu,"./images/3.png");
+        display_img(screen,posmenu,"./images/3.png",image);
     break;
     case 4:
-        display_img(screen,posmenu,"./images/4.png");
+        display_img(screen,posmenu,"./images/4.png",image);
 
     break;
     case 0:
-    display_img(screen,posmenu,"./images/0.png");
+    display_img(screen,posmenu,"./images/0.png",image);
     break;
 }
 //Game-Button-Sounds-Pack-Free-Sounds-_AudioTrimmer.com_.wav
@@ -239,14 +240,15 @@ if(son==NULL) printf("%s",SDL_GetError());
 Mix_VolumeChunk(son,MIX_MAX_VOLUME/2.5);
 Mix_PlayChannel(-1,son,0);
 }
-void live_background(SDL_Surface* screen,SDL_Rect pos,int i){
-    char filename[50];
 
+
+void live_background(SDL_Surface* screen,SDL_Rect pos,int i){
+SDL_Surface* image;
+char filename[50];
 pos.x=0;
 pos.y=0;
 SDL_Delay(50);
-
     sprintf(filename,"./images/%d",i);
     strcat(filename,".jpg.png");
-    display_img(screen,pos,filename);
+    display_img(screen,pos,filename,image);
 }

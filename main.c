@@ -5,8 +5,20 @@
 #include <SDL/SDL_ttf.h>
 #include "header.h"
 #include "minimap.h"
+#include <SDL/SDL_rotozoom.h>
 #include "time.h"
 #include <string.h>
+
+/**
+* @file main.c
+* @brief Testing Program.
+* @author C Team
+* @version 1
+* @date Apr 01, 2022
+*
+* Testing program for Minimap
+*
+*/
 
 int main() {
 SDL_Surface* screen;
@@ -62,11 +74,12 @@ char string[20]="";
 printf("menu inintialized!\n");
 printf("listening on events ...\n");
 int i=0;
-int level=2;
+float level=2;
 char player_name[20];
 char player[20]="";
     TTF_Font* font;
     SDL_Surface* text;
+    int done1=0;
     SDL_Color color={0,0,0};
     int last=0;
 while(1){
@@ -83,33 +96,26 @@ switch(menu_loop(test_event,posmenu,screen)){
     int last1;
     pos1.x=0;
     pos1.y=0;
-    display_img(screen,pos1,"./images/keyboard.png");
+    SDL_Surface* image;
+    int colorkey;
+
+
+
+    display_img(screen,pos1,"./images/keyboard.png",image);
     memset(player_name, 0, sizeof player_name);
-    if(enter_player_name(screen,player_name,test_event,&temps)==1){
+    enter_player_name(screen,player_name,test_event,&temps);
     printf("player name is %s \n",player_name);
     save_score(player_name,300);
-    afficher_scoreboard(screen);
     int done1;
-    while(!(done1==1)){
-        while(SDL_PollEvent(&test_event)) {
-            switch(test_event.type) {
-                case SDL_MOUSEBUTTONDOWN:
-                    if(test_event.motion.y<=38 && test_event.motion.y>=10 &&(test_event.motion.x<=632 && test_event.motion.x>=557)) done1=1;
-                break;
-                case SDL_QUIT:
-                SDL_Quit();
-                    //shutdown all sub systems
-                    exit(0);
-                    printf("Quiting....\n");
-                break;
-            }
-        }
-    }
-    display_img(screen,pos1,"./images/1st level.png");
-    afficher(m,screen);
+    display_img(screen,pos1,"./images/1st level.png",image);
+    SDL_Rect player;
+    SDL_Surface* player_image;
+    afficher(player,m,screen);
     Boite b;
     b.diag=IMG_Load("./images/dialogue.png");
-    strcpy(b.text,"hey! i am Haroun");
+    strcpy(b.text,"hey! i am ");
+    strcat(b.text,player_name);
+    affichier_diag(b,screen);
     affichier_diag(b,screen);
     SDL_Rect posref;
     posref.x=510;
@@ -119,15 +125,17 @@ switch(menu_loop(test_event,posmenu,screen)){
         if((temps.ss>last)||(temps.mm>last1)){
         last=temps.ss;
         last1=temps.mm;
-        display_img(screen,posref,"./images/minimaprefreshtime.png");
+        display_img(screen,posref,"./images/minimaprefreshtime.png",image);
         }
         done1=0;
         update_time(&temps,screen);
         while(SDL_PollEvent(&test_event)) {
         switch(test_event.type) {
+
             case SDL_MOUSEBUTTONDOWN:
             if(test_event.motion.y<=34 && test_event.motion.y>=10 &&(test_event.motion.x<=80 && test_event.motion.x>=9)){done=1;}
             break;
+            
             case SDL_QUIT:
                 SDL_Quit();
                 //shutdown all sub systems
@@ -136,27 +144,26 @@ switch(menu_loop(test_event,posmenu,screen)){
             break;
         }
         }
-        }
+        SDL_UpdateRect(screen, 0, 0, 0, 0);
         }
     break;
     case 2:
     while(!(done==1)){
-    display_img(screen,posoptions,"./images/optionsmenu.png");
+    display_img(screen,posoptions,"./images/optionsmenu.png",image);
     while(SDL_PollEvent(&test_event)) {
         switch(test_event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if(test_event.button.button==SDL_BUTTON_RIGHT && (test_event.motion.y<=160 && test_event.motion.y>=148 && test_event.motion.x<=368 && test_event.motion.x>=352)){
-                    if(level<=4){
-                    level++;
+                    level= level+0.5;
                     Mix_VolumeMusic(MIX_MAX_VOLUME/level);
                     if(level==5)Mix_VolumeMusic(0);
-                    }
+                    
                 }
                 if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=160 && test_event.motion.y>=148 && test_event.motion.x<=368 && test_event.motion.x>=352)){
-                    if(level>=2){
-                    level--;
+                    if(level>=2)
+                    level=level -0.5;
                     Mix_VolumeMusic(MIX_MAX_VOLUME/level);
-                    }
+                    
                 }
                 //clicked on full screen
                 if(test_event.button.button==SDL_BUTTON_LEFT && (test_event.motion.y<=197 && test_event.motion.y>=185 && test_event.motion.x<=368 && test_event.motion.x>=352)){
@@ -182,6 +189,23 @@ switch(menu_loop(test_event,posmenu,screen)){
     }
     break;
     case 3:
+    done1=0;
+    afficher_scoreboard(screen);
+        while(!(done1==1)){
+        while(SDL_PollEvent(&test_event)) {
+            switch(test_event.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    if(test_event.motion.y<=38 && test_event.motion.y>=10 &&(test_event.motion.x<=632 && test_event.motion.x>=557)) done1=1;
+                break;
+                case SDL_QUIT:
+                SDL_Quit();
+                    //shutdown all sub systems
+                    exit(0);
+                    printf("Quiting....\n");
+                break;
+            }
+        }
+    }
     //load credits
     break;
     case -1: 

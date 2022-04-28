@@ -5,8 +5,19 @@
 #include <SDL/SDL_ttf.h>
 #include "minimap.h"
 #include "header.h"
+#include <SDL/SDL_rotozoom.h>
 #include "time.h"
 #include <string.h>
+/**
+* @file minimap.c
+* @brief this is where all minimap functions are 
+*/
+/**
+* @brief To calculate player position on the minimap
+* @param minimap for the struct
+* @param camera for adjusting position of player on minimap
+* @return Nothing
+*/
 void MAJMinimap(SDL_Rect posJoueur,minimap* m,SDL_Rect camera,int redimensionnement)
 {
     SDL_Rect posJoueurABS;
@@ -16,33 +27,48 @@ m->pos_p.x=posJoueurABS.x*redimensionnement/100;
 m->pos_p.y=posJoueurABS.y*redimensionnement/100;
 }
 
-void afficher (minimap m, SDL_Surface * screen){
-SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
+void afficher (SDL_Rect player,minimap m, SDL_Surface * screen){
+SDL_Rect camera;int done=0;
+SDL_Event test_event;
+camera.x=2520;
+camera.y=280;
+MAJMinimap(player,&m,camera,20);
 SDL_BlitSurface(m.image, NULL, screen, &m.pos);
+SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
 SDL_Flip(screen);
 }
 
+/**
+* @brief initialisation minimap
+* @param minimap for the struct
+* @return Nothing
+*/
 void init_minimap(minimap* m){
-m->image = IMG_Load("./images/minimap.png");
+SDL_Surface* tmp = IMG_Load("./images/1st level.png");
+m->image =rotozoomSurface(tmp,0,0.2,0);   //rotozoom
 m->pos.x=500;
 m->pos.y=40;
-
 if (m->image == NULL) {
 printf("Couldnt load : %s\n", SDL_GetError());
 }
-m->player = IMG_Load("./images/spritesheet.png");
+m->player = IMG_Load("./images/red.png");
 if (m->player == NULL) {
 printf("Couldnt load : %s\n", SDL_GetError());
 return;
 }
 }
 
-
+/**
+* @brief to show the scoreboard
+* @param screen to show it on
+* @return Nothing
+*/
 void afficher_scoreboard (SDL_Surface* screen){ //shows scoreboard at the options menu
 SDL_Rect pos;
+SDL_Surface* image;
 pos.x=0;
 pos.y=0;
-display_img(screen,pos,"./images/background.png");
+display_img(screen,pos,"./images/background.png",image);
     FILE* ptr;
     char* ch;
  
@@ -117,15 +143,10 @@ textpos.y=210;
 int done=0;
 int last=0;
 int i=0;
+SDL_Surface* image;
 char string[20]="";
-display_img(screen,pos,"./images/keyboard.png");
+display_img(screen,pos,"./images/keyboard.png",image);
     while(!( done==1)){
-        if(t->ss>last){  //x 9 80 y 10 34
-        last=t->ss;
-        pos.x=550;
-        display_img(screen,pos,"./images/refreshkeyboardtime.png");
-        }
-        update_time(t,screen);
     while(SDL_PollEvent(&test_event)) {
         switch(test_event.type){
             case SDL_MOUSEBUTTONDOWN:
@@ -133,9 +154,14 @@ display_img(screen,pos,"./images/keyboard.png");
             break;
             case SDL_KEYDOWN:
             if(strcmp(PrintKeyInfo(&test_event.key),"return")==0||strcmp(PrintKeyInfo(&test_event.key),"enter")==0){done=1;return 1; break;}
-            if(strlen(PrintKeyInfo(&test_event.key))<2 && i<8){
-            strcat(player_name,PrintKeyInfo(&test_event.key));
+            if((strlen(PrintKeyInfo(&test_event.key))<2 && i<8)||(strcmp(PrintKeyInfo(&test_event.key),"space")==0)){
+            if(strcmp(PrintKeyInfo(&test_event.key),"space")==0){
+                    strcpy(string," ");
+                    strcat(player_name," ");
+                }else{
             strcpy(string,PrintKeyInfo(&test_event.key));
+            strcat(player_name,PrintKeyInfo(&test_event.key));
+                }
             for(int i=0;i<20;i++)string[i]=toupper(string[i]);
             write_texte(30,string,font,colorblack,text,textpos, screen);
             textpos.x=textpos.x+21;
