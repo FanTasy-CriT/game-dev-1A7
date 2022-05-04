@@ -4,11 +4,15 @@
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>
 #include "header.h"
+#include "header2.h"
 #include "minimap.h"
 #include <SDL/SDL_rotozoom.h>
 #include "time.h"
 #include <string.h>
-
+#include"perso.h"
+#include "header1.h"
+#include "enemie.h"
+#include "quiz.h"
 /**
 * @file main.c
 * @brief Testing Program.
@@ -24,6 +28,7 @@ int main() {
 SDL_Surface* screen;
 SDL_Rect pos;
 
+	TTF_Init();
 //initializing image position
 SDL_Rect posmenu;
 SDL_Rect posmenu1;
@@ -38,7 +43,6 @@ inittemps(&temps);
 //initializing minimap
 minimap m;
 init_minimap(&m);
-
 
 posoptions.x=167;posoptions.y=66;posmenu.x=200;posmenu.y=70;posmenu.h=0;posmenu.w=0;posmenu1.x=200;posmenu1.y=130;posmenu1.h=0;posmenu1.w=0;posmenu2.x=200;posmenu2.y=190;posmenu2.h=0;posmenu2.w=0;posmenu3.x=200;posmenu3.y=250;posmenu3.h=0;posmenu3.w=0;
 
@@ -98,14 +102,19 @@ switch(menu_loop(test_event,posmenu,screen)){
     pos1.y=0;
     SDL_Surface* image;
     int colorkey;
-
-
-
+  Ennemi E ;
+  initEnnemi(&E);
+Personne p ,p2;
+int j;
+    initPerso(&p) ;
+     initPerso2(&p2) ;
+       printf("1.joueur 1 \n2.jouers 2 \n") ;
+   scanf("%d",&j);  
+SDL_Event event;
     display_img(screen,pos1,"./images/keyboard.png",image);
     memset(player_name, 0, sizeof player_name);
     enter_player_name(screen,player_name,test_event,&temps);
     printf("player name is %s \n",player_name);
-    save_score(player_name,300);
     int done1;
     display_img(screen,pos1,"./images/1st level.png",image);
     SDL_Rect player;
@@ -116,19 +125,176 @@ switch(menu_loop(test_event,posmenu,screen)){
     strcpy(b.text,"hey! i am ");
     strcat(b.text,player_name);
     affichier_diag(b,screen);
-    affichier_diag(b,screen);
+    affichier_diag(b,screen);SDL_Delay(1500);SDL_Flip(screen);
+
     SDL_Rect posref;
+background bg;
+initBack(&bg);
+
+animerBackground (&bg,screen);
     posref.x=510;
     posref.y=0;
+SDL_Rect pos;
+int col=0,col2=0;
     inittemps(&temps);
         while(!( done==1)){
-        if((temps.ss>last)||(temps.mm>last1)){
+afficherBack(bg,screen);
+        display_img(screen,posref,"images/minimaprefreshtime.png",image);
+        //if((temps.ss>last)||(temps.mm>last1)){
+if(collisionPP(bg.calque_background,p.image,p.position,pos)==2) printf("pas de collision avec le sol\n");
+else printf("collision avec le sol\n");
+   afficherPerso ( p,screen) ;
+  if (j==2)
+	{afficherPerso ( p2,screen) ;
+    if (collision(E.pos,p2.position)==1)
+    if (col2==0) {quiz_final(screen);col2=1;
+screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}}
+afficher (p.position,m,screen);
+    deplacer(&E);
+    animerEnnemi(&E);
+    afficherEnnemi(E,screen);
+
+    if (collision(E.pos,p.position)==1)
+    if (col==0) {quiz_final(screen);col=1;
+screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}
+        update_time(&temps,screen);
+MAJMinimap(p.position,&m,pos,1);
+saut(&p);saut(&p2);
+   SDL_Flip(screen);SDL_Delay(50);  
+   SDL_PollEvent(&event);
+if(p.position.x<50) {p.position.x=50;scrolling_i(&bg,1,-2);}
+if(p.position.x>450) {p.position.x=450;scrolling_i(&bg,1,2);}
+switch(event.type)
+      {
+           case SDL_QUIT :
+           SDL_FreeSurface(screen);
+           done = 1;
+           break ;
+       
+
+          case SDL_KEYDOWN:
+               switch(event.key.keysym.sym)
+                 { 
+		case SDLK_UP:
+		sauter(&p);
+break;
+                   case SDLK_RIGHT:
+              
+                     p.frame.w=80 ;
+                     p.frame.h=100 ;
+                     p.frame.x=0 ;
+                     p.frame.y=0 ;
+                     animerPerso(&p) ;
+                     p.direction=1;
+
+                   
+ 
+                     if (p.position.x==530)
+                     { 
+                        p.direction=2 ;
+                        p.frame.w=80 ;
+                        p.frame.h=200 ;
+                        p.frame.x=320 ;
+                        p.frame.y=115 ;
+
+                     }
+             
+                   deplacerperso(&p,p.direction) ; 
+                 
+
+                   break ; 
+
+                 case SDLK_LEFT:
+                 p.frame.w=80 ;
+                 p.frame.h=200 ;
+                 p.frame.x=320 ;
+                 p.frame.y=115 ;
+                 animerPerso(&p) ;
+                 p.direction=2 ;
+ 
+                 if (p.position.x==0)
+                 {
+                p.direction=1 ;
+                p.frame.w=80 ;
+                p.frame.h=100 ;
+                p.frame.x=0 ;
+                p.frame.y=0 ;
+                  }
+              deplacerperso(&p,p.direction) ;
+               break ;
+         case SDLK_u:
+         p.vitesse= p.vitesse+0.05;
+          break; 
+
+          case SDLK_i:
+          while(p.vitesse>1)
+         p.vitesse= p.vitesse-0,05;
+          break ;
+          case SDLK_0:
+         saut(&p);
+          break ; 
+          
+          if (j==2)
+         {
+
+		case SDLK_z:
+		sauter(&p2);
+		break;
+             case SDLK_d:
+                   p2.frame.w=80 ;
+                     p2.frame.h=100 ;
+                     p2.frame.x=0 ;
+                     p2.frame.y=0 ;
+                     animerPerso(&p2) ;
+                     p2.direction=1 ;
+
+                   
+ 
+                     if (p2.position.x==530)
+                     { 
+                        p2.direction=2 ;
+                        p2.frame.w=80 ;
+                        p2.frame.h=200 ;
+                        p2.frame.x=320 ;
+                        p2.frame.y=115 ;
+
+                     }
+             
+                   deplacerperso(&p2,p2.direction) ; 
+                   break ;
+             case SDLK_q :
+                p2.frame.w=80 ;
+                 p2.frame.h=200 ;
+                 p2.frame.x=320 ;
+                 p2.frame.y=115 ;
+                 animerPerso(&p2) ;
+                 p2.direction=2 ;
+ 
+                 if (p.position.x==0)
+                 {
+                p2.direction=1 ;
+                p2.frame.w=80 ;
+                p2.frame.h=100 ;
+                p2.frame.x=0 ;
+                p2.frame.y=0 ;
+                  }
+              deplacerperso(&p2,p2.direction) ;
+            break ;
+       //  }
+ }
+
+           
+      
+  break ;
+
+      } 
+
+
         last=temps.ss;
         last1=temps.mm;
-        display_img(screen,posref,"./images/minimaprefreshtime.png",image);
         }
         done1=0;
-        update_time(&temps,screen);
+    save_score(player_name,temps.ss*10);
         while(SDL_PollEvent(&test_event)) {
         switch(test_event.type) {
 

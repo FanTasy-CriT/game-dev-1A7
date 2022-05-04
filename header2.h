@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 void display_bmp(SDL_Surface* screen,SDL_Rect pos,const char * path);
-void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path,SDL_Surface* image);
+void display_img(SDL_Surface* screen,SDL_Rect pos,const char * path);
 void initialize_audio(Mix_Music * music);
 char* PrintKeyInfo( SDL_KeyboardEvent *key );
 void hover(int possition,SDL_Rect posmenu,SDL_Surface* screen);
@@ -16,5 +16,5 @@ void write_texte(int fontsize,const char message[], TTF_Font* font,SDL_Color col
 int menu_loop(SDL_Event test_event,SDL_Rect posmenu,SDL_Surface* screen);
 void play_effect(Mix_Chunk* son);
 void live_background(SDL_Surface* screen,SDL_Rect pos,int i);
-
+int collisionPP(SDL_Surface *calque,SDL_Surface *perso,SDL_Rect posperso,SDL_Rect posmap);
 #endif // HEADER_H_
