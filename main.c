@@ -10,6 +10,7 @@
 #include "time.h"
 #include <string.h>
 #include"perso.h"
+#include "minmax.h"
 #include "header1.h"
 #include "enemie.h"
 #include "quiz.h"
@@ -132,15 +133,15 @@ SDL_Event event;
     initBack(&bg);
 
 //animerBackground (&bg,screen);
-    posref.x=510;
-    posref.y=0;
 SDL_Rect pos;
 int col=0,col2=0;
     inittemps(&temps);
     //SDL_Rect S=p.position;
         while(!( done==1)){
 afficherBack(bg,screen);
-        display_img(screen,posref,"images/minimaprefreshtime.png",image);
+ posref.x=510;
+    posref.y=0;
+        //display_img(screen,posref,"images/minimaprefreshtime.png",image);
         //if((temps.ss>last)||(temps.mm>last1)){
 if(collisionPP(bg.calque_background,p.image,p.position,pos)==2) printf("pas de collision avec le sol\n");
 else printf("collision avec le sol\n");
@@ -152,22 +153,29 @@ else printf("collision avec le sol\n");
   if (j==2)
 	{afficherPerso ( p2,screen) ;
     if (collision(E.pos,p2.position)==1)
-    if (col2==0) {quiz_final(screen);col2=1;
+    if (col2==0) {quiz_final(screen);col2=1;XO();
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}}
     deplacer(&E);
     animerEnnemi(&E);
     afficherEnnemi(E,screen);
     if(p.position.x<50)p.position.x=50;
     if (collision(E.pos,p.position)==1)
-    if (col==0) {quiz_final(screen);col=1;
+    if (col==0) {quiz_final(screen);col=1;XO(); 
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}
         update_time(&temps,screen);
+        SDL_Rect pos_text;
+        pos_text.x=250;
+        pos_text.y=0;
+        char this[20];
+        sprintf(this, "Score : %d", temps.mm*600+temps.ss*10);
+        write_texte(25,this,font,color,text,pos_text,screen);
 MAJMinimap(p.position,&m,pos,1);
 saut(&p);saut(&p2);
    SDL_Flip(screen);SDL_Delay(50);  
    SDL_PollEvent(&event);
    if(bg.pos_background2.x>3115-640)bg.pos_background2.x=3115-640;
    if(bg.pos_background2.x<0)bg.pos_background2.x=0;
+   if(p.position.x>=570)p.position.x=570;
 printf("%d",p.position.x);
 switch(event.type)
       {
