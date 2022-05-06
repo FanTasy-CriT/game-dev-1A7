@@ -30,14 +30,13 @@ m->pos_p.y=posJoueurABS.y*redimensionnement/100;
 void afficher (SDL_Rect player,minimap m, SDL_Surface * screen){
 SDL_Rect camera;int done=0;
 SDL_Event test_event;
-camera.x=2520;
-camera.y=280;
-MAJMinimap(player,&m,camera,20);
+camera.x=1150;
+camera.y=310;
+MAJMinimap(player,&m,camera,15);
 SDL_BlitSurface(m.image, NULL, screen, &m.pos);
 SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
-SDL_Flip(screen);
 }
-
+    
 /**
 * @brief initialisation minimap
 * @param minimap for the struct
@@ -45,8 +44,8 @@ SDL_Flip(screen);
 */
 void init_minimap(minimap* m){
 SDL_Surface* tmp = IMG_Load("./images/1st level.png");
-m->image =rotozoomSurface(tmp,0,0.2,0);   //rotozoom
-m->pos.x=500;
+m->image =rotozoomSurface(tmp,0,0.15,0);   //rotozoom
+m->pos.x=170;
 m->pos.y=40;
 if (m->image == NULL) {
 printf("Couldnt load : %s\n", SDL_GetError());
@@ -233,5 +232,4 @@ void affichier_diag(Boite b,SDL_Surface* screen){
     textpos.y=pos.y+20;
     SDL_BlitSurface(b.diag,NULL,screen,&pos);
     write_texte(20,b.text,font,color,text,textpos,screen);
-    SDL_Flip(screen);
 }

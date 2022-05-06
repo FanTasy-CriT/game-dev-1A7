@@ -9,7 +9,8 @@
 void scrolling_i(background *b,int d,int p)
 {
 if(d==1)b->pos_background2.x+=p;else b->pos_background2.y+=p;
-if(b->pos_background2.x<0) b->pos_background2.x=0;if(b->pos_background2.x>40) b->pos_background2.x=40;
+if(b->pos_background2.x<0) b->pos_background2.x=0;
+if(b->pos_background2.x>3115) b->pos_background2.x=40;
 }
 void initBack(background *b)
 {
@@ -73,7 +74,6 @@ void animerBackground (background *b,SDL_Surface *ecran)
     for(j=1; j<6; j++)
     {
         SDL_BlitSurface( b->porte[j], NULL,ecran,&(b->port));
-        SDL_Flip(ecran);
         SDL_Delay(130);      
     }
 SDL_Delay(1000);
@@ -81,14 +81,12 @@ SDL_BlitSurface(b->aff,NULL,ecran,&(b->port));
     for(j=1; j<12; j++)
     {
         SDL_BlitSurface( b->owl[j], NULL,ecran,&(b->owll));
-        SDL_Flip(ecran);
         SDL_Delay(130);
     }
 SDL_Delay(2000);
     for(j=1; j<12; j++)
     {
         SDL_BlitSurface( b->owl[j], NULL,ecran,&(b->owll));
-        SDL_Flip(ecran);
         SDL_Delay(130);
     }
 

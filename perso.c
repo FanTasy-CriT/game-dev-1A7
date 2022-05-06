@@ -27,7 +27,7 @@ void initPerso2(Personne *p2)
 {
      (*p2).image=IMG_Load("persoasma2.png");  
 
-    p2->position.x=30;
+    p2->position.x=300;
     p2->position.y=285;
     p2->position.w=80;
     p2->position.h=0;
@@ -50,7 +50,10 @@ void initPerso2(Personne *p2)
 
 void afficherPerso (Personne p,SDL_Surface *screen)
 {
-    SDL_BlitSurface(p.image,&(p.frame),screen,&(p.position)); 
+SDL_Surface* image1;
+image1=IMG_Load("./1st level");
+    SDL_BlitSurface(p.image,&(p.frame),image1,&(p.position)); 
+    SDL_BlitSurface(p.image,&(p.frame),screen,&(p.position));
 }
 
 void deplacerperso(Personne *p,int dt) 

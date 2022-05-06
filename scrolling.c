@@ -4,14 +4,8 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>
-#include"header2.h"
+#include"header1.h"
 
-void scrolling_i(background *b,int d,int p)
-{
-if(d==1)b->pos_background2.x+=p;
-else b->pos_background2.y+=p;
-
-}
 
 void scrolling (hero *evan,background *b,int co )
 {

@@ -121,22 +121,23 @@ SDL_Event event;
     SDL_Surface* player_image;
     afficher(player,m,screen);
     Boite b;
-    b.diag=IMG_Load("./images/dialogue.png");
+    /*b.diag=IMG_Load("./images/dialogue.png");
     strcpy(b.text,"hey! i am ");
     strcat(b.text,player_name);
     affichier_diag(b,screen);
-    affichier_diag(b,screen);SDL_Delay(1500);SDL_Flip(screen);
+    affichier_diag(b,screen);SDL_Delay(1500);SDL_Flip(screen);*/
 
     SDL_Rect posref;
-background bg;
-initBack(&bg);
+    background bg;
+    initBack(&bg);
 
-animerBackground (&bg,screen);
+//animerBackground (&bg,screen);
     posref.x=510;
     posref.y=0;
 SDL_Rect pos;
 int col=0,col2=0;
     inittemps(&temps);
+    //SDL_Rect S=p.position;
         while(!( done==1)){
 afficherBack(bg,screen);
         display_img(screen,posref,"images/minimaprefreshtime.png",image);
@@ -144,16 +145,19 @@ afficherBack(bg,screen);
 if(collisionPP(bg.calque_background,p.image,p.position,pos)==2) printf("pas de collision avec le sol\n");
 else printf("collision avec le sol\n");
    afficherPerso ( p,screen) ;
+   SDL_Rect both;
+   both.x=p.position.x + bg.pos_background2.x;
+   both.y=p.position.y + bg.pos_background2.y;
+  afficher(both,m,screen);
   if (j==2)
 	{afficherPerso ( p2,screen) ;
     if (collision(E.pos,p2.position)==1)
     if (col2==0) {quiz_final(screen);col2=1;
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}}
-afficher (p.position,m,screen);
     deplacer(&E);
     animerEnnemi(&E);
     afficherEnnemi(E,screen);
-
+    if(p.position.x<50)p.position.x=50;
     if (collision(E.pos,p.position)==1)
     if (col==0) {quiz_final(screen);col=1;
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}
@@ -162,8 +166,9 @@ MAJMinimap(p.position,&m,pos,1);
 saut(&p);saut(&p2);
    SDL_Flip(screen);SDL_Delay(50);  
    SDL_PollEvent(&event);
-if(p.position.x<50) {p.position.x=50;scrolling_i(&bg,1,-2);}
-if(p.position.x>450) {p.position.x=450;scrolling_i(&bg,1,2);}
+   if(bg.pos_background2.x>3115-640)bg.pos_background2.x=3115-640;
+   if(bg.pos_background2.x<0)bg.pos_background2.x=0;
+printf("%d",p.position.x);
 switch(event.type)
       {
            case SDL_QUIT :
@@ -177,16 +182,23 @@ switch(event.type)
                  { 
 		case SDLK_UP:
 		sauter(&p);
+        if(p.direction==1)bg.pos_background2.x+=15;else bg.pos_background2.x-=15;
+        /*if(p.direction==1)
+        scrolling_i(&bg,1,6);
+        if(p.direction==2)
+        scrolling_i(&bg,1,-6);*/
 break;
                    case SDLK_RIGHT:
-              
+
                      p.frame.w=80 ;
                      p.frame.h=100 ;
                      p.frame.x=0 ;
                      p.frame.y=0 ;
                      animerPerso(&p) ;
                      p.direction=1;
-
+                     bg.pos_background2.x+=10;
+                     //scrolling_i(&bg,1,2);
+                    //S.x+=3.5;
                    
  
                      if (p.position.x==530)
@@ -196,7 +208,6 @@ break;
                         p.frame.h=200 ;
                         p.frame.x=320 ;
                         p.frame.y=115 ;
-
                      }
              
                    deplacerperso(&p,p.direction) ; 
@@ -211,7 +222,10 @@ break;
                  p.frame.y=115 ;
                  animerPerso(&p) ;
                  p.direction=2 ;
- 
+                 bg.pos_background2.x-=10;
+                 //scrolling_i(&bg,1,-2);
+                //S.x-=3.5;
+
                  if (p.position.x==0)
                  {
                 p.direction=1 ;
@@ -228,10 +242,11 @@ break;
 
           case SDLK_i:
           while(p.vitesse>1)
-         p.vitesse= p.vitesse-0,05;
+         p.vitesse= p.vitesse-0.05;
           break ;
           case SDLK_0:
          saut(&p);
+         scrolling_i(&bg,p.direction,4);
           break ; 
           
           if (j==2)
@@ -239,6 +254,8 @@ break;
 
 		case SDLK_z:
 		sauter(&p2);
+        if(p.direction==1) bg.pos_background2.x+=10; else
+        bg.pos_background2.x-=10;
 		break;
              case SDLK_d:
                    p2.frame.w=80 ;
@@ -247,9 +264,7 @@ break;
                      p2.frame.y=0 ;
                      animerPerso(&p2) ;
                      p2.direction=1 ;
-
-                   
- 
+                    bg.pos_background2.x+=10;
                      if (p2.position.x==530)
                      { 
                         p2.direction=2 ;
@@ -269,7 +284,7 @@ break;
                  p2.frame.y=115 ;
                  animerPerso(&p2) ;
                  p2.direction=2 ;
- 
+                bg.pos_background2.x-=10;
                  if (p.position.x==0)
                  {
                 p2.direction=1 ;
@@ -282,13 +297,8 @@ break;
             break ;
        //  }
  }
-
-           
-      
   break ;
-
       } 
-
 
         last=temps.ss;
         last1=temps.mm;
