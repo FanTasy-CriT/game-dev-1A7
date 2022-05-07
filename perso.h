@@ -3,6 +3,7 @@
 #include<SDL/SDL_image.h>
 #include<SDL/SDL_mixer.h>
 #include<SDL/SDL_ttf.h>
+#include "header1.h"
 #define LARGEUR_FENETRE 1200
 #define HAUTEUR_FENETRE 600
 struct Personne

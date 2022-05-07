@@ -32,7 +32,8 @@ typedef struct background{
 	SDL_Rect owll;
 }background;
 
- 
+	void partage(background b,SDL_Surface *ecran);
+	void scrolling_partage(background *b,int d,int p);
 	void initBack(background *b);
  	void afficherBack(background b,SDL_Surface *ecran);
 	void initialiser_evan(hero *evan);

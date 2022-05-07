@@ -33,7 +33,6 @@ SDL_Event test_event;
 camera.x=1150;
 camera.y=310;
 MAJMinimap(player,&m,camera,15);
-SDL_BlitSurface(m.image, NULL, screen, &m.pos);
 SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
 }
     

@@ -6,6 +6,19 @@
 #include <SDL/SDL_ttf.h>
 #include"header1.h"
 
+
+void partage(background b,SDL_Surface *ecran)
+{	
+b.pos_background.x+=ecran->w/2;
+	SDL_BlitSurface(b.afficher_background,&(b.pos_background2),ecran,&(b.pos_background));
+}
+
+void scrolling_partage(background *b,int d,int p)
+{
+if(d==1)b->pos_background2.x+=p;else b->pos_background2.y+=p;
+if(b->pos_background2.x<0) b->pos_background2.x=0;if(b->pos_background2.x>360) b->pos_background2.x=360;
+}
+
 void scrolling_i(background *b,int d,int p)
 {
 if(d==1)b->pos_background2.x+=p;else b->pos_background2.y+=p;
