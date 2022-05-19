@@ -38,11 +38,12 @@ SDL_Rect posoptions;
 SDL_Rect posmenu3;
 
 //initializing time
-Time temps;
+Time temps,enigme;
 inittemps(&temps);
 
 //initializing minimap
 minimap m;
+int count;
 init_minimap(&m);
 
 
@@ -70,6 +71,8 @@ return 1;
 
 Mix_Music * music;
 initialize_audio(music);
+int received =-1;
+arduinoWriteData(0);
 
 
 int position =0; //hover position mouse
@@ -81,6 +84,7 @@ char string[20]="";
 printf("menu inintialized!\n");
 printf("listening on events ...\n");
 int i=0;
+int col=0,col2=0;
 float level=2;
 char player_name[20];
 char player[20]="";
@@ -111,8 +115,27 @@ Personne p ,p2;
 int j;
     initPerso(&p) ;
     initPerso(&p2) ;
-       printf("1.joueur 1 \n2.jouers 2 \n") ;
-   scanf("%d",&j);  
+    pos.x=0;
+    pos.y=0;
+    int done=1;
+    SDL_Event test_event1; //y 133 151 //y 240 260
+    display_img(screen,pos,"./images/multiplayersingleplayer.png",image);
+    while(done==1){
+        SDL_PollEvent(&test_event1);
+        switch(test_event1.type){
+            case SDL_MOUSEBUTTONDOWN:
+                if(test_event1.button.button==SDL_BUTTON_LEFT && (test_event1.motion.y<=151 && test_event1.motion.y>=133 && test_event1.motion.x<=125 && test_event1.motion.x>=100)){ j= 1; done=0;}
+                if(test_event1.button.button==SDL_BUTTON_LEFT && (test_event1.motion.y<=260 && test_event1.motion.y>=240 && test_event1.motion.x<=125 && test_event1.motion.x>=100)){ j= 2;done=0; }
+            break;
+            case SDL_QUIT:
+                SDL_Quit();
+                //shutdown all sub systems
+                return -1;
+                printf("Quiting....\n");
+            break;
+
+        }
+    }
 SDL_Event event;
     display_img(screen,pos1,"./images/keyboard.png",image);
     memset(player_name, 0, sizeof player_name);
@@ -132,24 +155,18 @@ SDL_Event event;
 
     SDL_Rect posref;
     background bg,bg2;
+    SDL_Rect text_pos;
+    text_pos.x=300;
+    text_pos.y=5;
     initBack(&bg);
     initBack(&bg2);
 
 //animerBackground (&bg,screen);
 SDL_Rect pos;
-int col=0,col2=0;
     inittemps(&temps);
     //SDL_Rect S=p.position;
         while(!( done==1)){
 afficherBack(bg,screen);
-
- posref.x=510;
-    posref.y=0;
-        //display_img(screen,posref,"images/minimaprefreshtime.png",image);
-        //if((temps.ss>last)||(temps.mm>last1)){
-/*if(collisionPP(bg.calque_background,p.image,p.position,pos)==2) printf("pas de collision avec le sol\n");
-else printf("collision avec le sol\n");*/
-   afficherPerso ( p,screen) ;
    SDL_Rect both;
    SDL_Rect both2;
    both.x=p.position.x + bg.pos_background2.x;
@@ -157,6 +174,33 @@ else printf("collision avec le sol\n");*/
    both2.x=p2.position.x + bg2.pos_background2.x;
    both2.y=p2.position.y + bg2.pos_background2.y;
    both2.x-=300;
+ posref.x=510;
+    posref.y=0;
+    int collided;
+    int temp=0;
+        //display_img(screen,posref,"images/minimaprefreshtime.png",image);
+        //if((temps.ss>last)||(temps.mm>last1)){
+
+//collision firas
+
+if(both.x<680){
+if(collisionPP(bg.calque_background,p.image,both,both)==2)
+{
+    printf("\n %d ",p.position.x);
+ puts("colide");
+ if(p.isjumping!=0){temp=p.isjumping;}
+ if(p.isjumping==0)p.isjumping=0;
+
+}
+else  {
+    if(p.isjumping==0)p.position.y+=3;
+p.isjumping=temp;
+saut(&p,&bg);
+if(p.isjumping==0)
+puts("didn't collide");
+ }
+        }
+afficherPerso ( p,screen) ;
   if (j==2)
 	{   SDL_Rect camera;
         camera.x=1150;
@@ -166,33 +210,66 @@ else printf("collision avec le sol\n");*/
         MAJMinimap(both2,&m,camera,15);
         SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
         afficher(both,m,screen);
+        char string[20];
+        //sprintf(string,"score :%d",temps.ss*10+temps.mm*600);
+        //write_texte(20,string,font,color,text,text_pos,screen);
         afficherPerso ( p2,screen) ;
     if (collision(E.pos,p2.position)==1)
-    if (col2==0) {quiz_final(screen);col2=1;/*XO();*/
+    if (col2==0) {quiz_final(screen);col2=1;
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}}
+SDL_BlitSurface(m.image, NULL, screen, &m.pos);
+        if(j==2) SDL_BlitSurface(m.player, NULL, screen, &m.pos_p);
+        afficher(both,m,screen);
+        char string[20];
+        sprintf(string,"score :%d",temps.ss*10+temps.mm*600);
+        write_texte(20,string,font,color,text,text_pos,screen);
     deplacer(&E);
     animerEnnemi(&E);
     afficherEnnemi(E,screen);
     if(p.position.x<50)p.position.x=50;
     if (collision(E.pos,p.position)==1)
-    if (col==0) {quiz_final(screen);col=1;/*XO();*/ 
+    if (col==0) {quiz_final(screen);col=1;
 screen = SDL_SetVideoMode(640, 410, 8, SDL_SWSURFACE|SDL_ANYFORMAT);}
         update_time(&temps,screen);
 MAJMinimap(p.position,&m,pos,1);
-saut(&p);saut(&p2);
+saut(&p,&bg);saut(&p2,&bg2);
    SDL_Flip(screen);SDL_Delay(50);  
+   arduinoReadData(&received);
    SDL_PollEvent(&event);
    if(bg.pos_background2.x>3115-640)bg.pos_background2.x=3115-640;
-   if(bg.pos_background2.x<50)bg.pos_background2.x=50;
-   if(bg2.pos_background2.x>3115-940)bg.pos_background2.x=3115-940;
+   if(bg.pos_background2.x<20)bg.pos_background2.x=20;
+   if(bg2.pos_background2.x>2780)bg2.pos_background2.x=2780;
    if(bg2.pos_background2.x<50)bg2.pos_background2.x=50;
-   if(p.position.x>=20)p.position.x=20;
-   if(p2.position.x>=570)p2.position.x=570;
+   if(p.position.x>=200)p.position.x=200;
+   if(p2.position.x>=530)p2.position.x=530;
    if(p2.position.x<=310)p2.position.x=310;
-   printf("\npositionback 1: %d\n",bg.pos_background2.x);
-printf("\npositionback2 :%d\n",bg2.pos_background2.x);
-   printf("\nposition 1: %d\n",p2.position.x);
-printf("\nposition 2 :%d\n",p2.position.x);
+   if(received==2){p.frame.w=80 ;
+                     p.frame.h=100 ;
+                     p.frame.x=0 ;
+                     p.frame.y=0 ;
+                     animerPerso(&p) ;
+                     p.direction=1;
+                     if(p.vitesse!=0)bg.pos_background2.x+=10;}
+                     else if(received==1){p.frame.w=80 ;
+                 p.frame.h=200 ;
+                 p.frame.x=320 ;
+                 p.frame.y=115 ;
+                 animerPerso(&p) ;
+                 p.direction=2 ;
+                 if(p.vitesse-=0)bg.pos_background2.x-=10;
+                 //scrolling_i(&bg,1,-2);
+                //S.x-=3.5;
+
+                 if (p.position.x==0)
+                 {
+                p.direction=1 ;
+                p.frame.w=80 ;
+                p.frame.h=100 ;
+                p.frame.x=0 ;
+                p.frame.y=0 ;
+                  }
+              deplacerperso(&p,p.direction) ;}
+              printf("\nreceived : %d  \n",received);
 switch(event.type)
       {
            case SDL_QUIT :
@@ -206,21 +283,21 @@ switch(event.type)
                  { 
 		case SDLK_UP:
 		sauter(&p);
-        if(p.direction==1)bg.pos_background2.x+=15;else bg.pos_background2.x-=15;
+        if(p.direction==1)if(p.vitesse!=0)bg.pos_background2.x+=15;else if(p.vitesse==0)bg.pos_background2.x-=15;
         /*if(p.direction==1)
         scrolling_i(&bg,1,6);
         if(p.direction==2)
         scrolling_i(&bg,1,-6);*/
 break;
                    case SDLK_RIGHT:
-
                      p.frame.w=80 ;
                      p.frame.h=100 ;
                      p.frame.x=0 ;
                      p.frame.y=0 ;
+
                      animerPerso(&p) ;
                      p.direction=1;
-                     bg.pos_background2.x+=10;
+                     if(p.vitesse!=0)bg.pos_background2.x+=10;
                      //scrolling_i(&bg,1,2);
                     //S.x+=3.5;
                    
@@ -246,7 +323,7 @@ break;
                  p.frame.y=115 ;
                  animerPerso(&p) ;
                  p.direction=2 ;
-                 bg.pos_background2.x-=10;
+                 if(p.vitesse-=0)bg.pos_background2.x-=10;
                  //scrolling_i(&bg,1,-2);
                 //S.x-=3.5;
 
@@ -269,8 +346,7 @@ break;
          p.vitesse= p.vitesse-0.05;
           break ;
           case SDLK_0:
-         saut(&p);
-         scrolling_i(&bg,p.direction,4);
+         saut(&p,&bg);
           break ; 
           
           if (j==2)
@@ -344,7 +420,6 @@ break;
             break;
         }
         }
-        SDL_UpdateRect(screen, 0, 0, 0, 0);
         }
     break;
     case 2:
@@ -408,6 +483,34 @@ break;
     }
     //load credits
     break;
+    case 4:
+    XO();
+    //load minigame
+    break;
+    case 5:
+    //load load
+    printf("loading...\n");
+	int positionFond = 150 ;
+	short int Z = 10 ;
+	short int A = 5 ;
+	int score = 3205 ; 
+	int vie = 3 ;
+	int running = 1 ;
+	int i ;
+				FILE* f=NULL;
+				f=fopen("./score/saveload.txt","r");
+				if(f!=NULL)
+				{
+				fscanf(f,"%d , %hd , %hd , %d , %d ",&positionFond,&Z,&A,&score,&vie) ; 
+				printf("positionFond : %d \t Z : %hd \t A : %hd \t score : %d \t vie : %d\t \n",positionFond,Z,A,score,vie) ; 
+				}
+				else
+				{
+				printf("the file is empty\n");
+				} 
+				fclose(f) ; 
+    break;
+
     case -1: 
     return -1;
     break;
